@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.retail.retailmanagement.dto.request.AuthRequest;
 import com.retail.retailmanagement.dto.response.AuthResponse;
+import com.retail.retailmanagement.helper.ResponseUtil;
 import com.retail.retailmanagement.service.AuthService;
 
 @RestController
@@ -21,11 +22,21 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+
+        AuthResponse result = authService.register(request);
+
+        ResponseEntity<?> response = ResponseUtil.success(result, "Register success");
+
+        return response;
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
-        return authService.login(request);
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+
+        AuthResponse authResponse = authService.login(request);
+
+        ResponseEntity<?> response = ResponseUtil.success(authResponse, "Login success");
+
+        return response;
     }
 }
