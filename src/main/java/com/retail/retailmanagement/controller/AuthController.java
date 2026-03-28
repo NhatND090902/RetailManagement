@@ -11,6 +11,8 @@ import com.retail.retailmanagement.dto.response.AuthResponse;
 import com.retail.retailmanagement.helper.ResponseUtil;
 import com.retail.retailmanagement.service.AuthService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -21,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody AuthRequest request) {
 
         AuthResponse result = authService.register(request);
 
@@ -31,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request) {
 
         AuthResponse authResponse = authService.login(request);
 
