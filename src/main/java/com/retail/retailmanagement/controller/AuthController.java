@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.retail.retailmanagement.dto.request.AuthRequest;
+import com.retail.retailmanagement.dto.request.RegisterRequest;
 import com.retail.retailmanagement.dto.response.AuthResponse;
 import com.retail.retailmanagement.helper.ResponseUtil;
 import com.retail.retailmanagement.service.AuthService;
@@ -23,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody AuthRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
 
         AuthResponse result = authService.register(request);
 

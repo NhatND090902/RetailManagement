@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.retail.retailmanagement.customException.UserAlreadyExistsException;
 import com.retail.retailmanagement.dto.request.AuthRequest;
+import com.retail.retailmanagement.dto.request.RegisterRequest;
 import com.retail.retailmanagement.dto.response.AuthResponse;
 import com.retail.retailmanagement.entity.User;
 import com.retail.retailmanagement.repository.UserRepository;
@@ -30,21 +31,6 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    @Transactional
-    public AuthResponse register(AuthRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new UserAlreadyExistsException(request.getUsername());
-        }
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole("ROLE_USER");
-        userRepository.save(user);
-
-        String token = jwtService.generateToken(user.getUsername());
-        return new AuthResponse(token);
-    }
-
     public AuthResponse login(AuthRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -54,4 +40,48 @@ public class AuthService {
         String token = jwtService.generateToken(request.getUsername());
         return new AuthResponse(token);
     }
+
+    @Transactional
+    public AuthResponse register(RegisterRequest request) {
+
+        String email = request.getEmail().toLowerCase();
+        String username = request.getUsername().toLowerCase();
+
+        if (userRepository.existsByEmail(email)) {
+            throw new UserAlreadyExistsException("Email", email);
+        }
+
+        if (userRepository.existsByUsername(username)) {
+            throw new UserAlreadyExistsException("username", username);
+        }
+
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole("ROLE_USER");
+        user.setStatus("PENDING");
+        userRepository.save(user);
+
+        String token = jwtService.generateToken(user.getUsername());
+        return new AuthResponse(token);
+        // TODO:
+        // - generate OTP
+        // - save verification code
+        // - send email
+    }
+    // @Transactional
+    // public AuthResponse register(AuthRequest request) {
+    // if (userRepository.existsByUsername(request.getUsername())) {
+    // throw new UserAlreadyExistsException(request.getUsername());
+    // }
+    // User user = new User();
+    // user.setUsername(request.getUsername());
+    // user.setPassword(passwordEncoder.encode(request.getPassword()));
+    // user.setRole("ROLE_USER");
+    // userRepository.save(user);
+
+    // String token = jwtService.generateToken(user.getUsername());
+    // return new AuthResponse(token);
+    // }
 }

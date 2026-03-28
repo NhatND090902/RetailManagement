@@ -15,32 +15,32 @@ import com.retail.retailmanagement.helper.ResponseUtil;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<?> handleUserExists(UserAlreadyExistsException ex) {
-        ResponseEntity<?> response = ResponseUtil.error(HttpStatus.BAD_REQUEST, "Username aready exist");
-        return response;
-    }
+        @ExceptionHandler(UserAlreadyExistsException.class)
+        public ResponseEntity<?> handleUserExists(UserAlreadyExistsException ex) {
+                ResponseEntity<?> response = ResponseUtil.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+                return response;
+        }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<?>> handleValidationException(
-            MethodArgumentNotValidException ex) {
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ApiResponse<?>> handleValidationException(
+                        MethodArgumentNotValidException ex) {
 
-        List<ErrorDetail> errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(err -> new ErrorDetail(
-                        err.getField(),
-                        err.getDefaultMessage(),
-                        err.getCode()))
-                .toList();
+                List<ErrorDetail> errors = ex.getBindingResult()
+                                .getFieldErrors()
+                                .stream()
+                                .map(err -> new ErrorDetail(
+                                                err.getField(),
+                                                err.getDefaultMessage(),
+                                                err.getCode()))
+                                .toList();
 
-        ApiResponse<?> response = new ApiResponse<>(
-                false,
-                "Validation failed",
-                null,
-                errors);
+                ApiResponse<?> response = new ApiResponse<>(
+                                false,
+                                "Validation failed",
+                                null,
+                                errors);
 
-        return ResponseEntity.badRequest().body(response);
-    }
+                return ResponseEntity.badRequest().body(response);
+        }
 
 }
